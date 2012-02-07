@@ -1,0 +1,81 @@
+== Buckets Problem
+Program that solves buckets problem.
+
+The basic problem is defined as follows: There are two buckets available (with given capacities), a tap and a sink. At the beginning both the buckets are empty. You can:
+- Fill any bucket up to the brim (to its maximal capacity)
+- Empty any bucket
+- Pour a water from one bucket to another, either emptying one or fully filling the second bucket
+
+The goal is to reach given amounts of water in the respective buckets.
+
+The problem might be generalized for more than two buckets. Moreover, there could be some given amount of water in some buckets in the beginning.
+---
+Each instance of the problem is solved by five methods (BFS, DFS and 3 heuristics). Results are sent to I/O in CSV format. 
+
+For the solving methods description, measurement and its analysis or any questions about implementation 
+see http://zahradnicky.cz/skola/doku.php?id=mi-paa_task2 or contact me mailto:mzahrada@gmail.com.
+
+
+=== Usage
+To run the programme from command line you have to *specify* input and output filenames 
+and *at* *least* *one* *solving* *method* as a command line's options:
+- <tt>-b or --bfs</tt> .. BFS (Breadth-first search) method used for solving problem.
+- <tt>-d or --dfs</tt> .. DFS (Depth-first search) method used for solving problem.
+- <tt>-m or --man</tt> .. MAN (Manhattan distance) heuristic used for solving problem.
+- <tt>-e or --euc</tt> .. EUC (Euclidean distance) heuristic used for solving problem.
+- <tt>-s or --sco</tt> .. SCO (Score distance) heuristic used for solving problem.
+- <tt>-h or --help</tt> .. shows help
+
+Usage example:
+    ~Buckets/bin> ruby bucktes [-bdmesh] inputfile outfile
+    ~Buckets/bin> ruby bucktes -m -s  buckets.dat out.csv
+    ~Buckets/bin> ruby bucktes -h 
+
+=== Testing
+   ~Buckets/test> ruby bucktes_test_suite.rb
+
+=== Input 
+Each input row represents one bucket problem instance. Lets describe line on first instance in example below:
+- <tt>11</tt> .. instance id
+- <tt>5</tt> .. instance size / number of buckets
+- <tt>14 10  6  2  8</tt> .. buckets capacities
+- <tt>0  0  1  0  0</tt> .. buckets initial state
+- <tt>12  6  4  1  8</tt> .. buckets final state
+
+Input example (3 instances):
+	11 5 14 10  6  2  8  0  0  1  0  0 12  6  4  1  8
+	12 5 14 10  6  2  8  0  0  1  0  0 14  4  5  0  4
+	13 5 14 10  6  2  8  0  0  1  0  0 12  6  6  2  4
+
+=== Output 
+Program's output is CSV file where first line is header and next five lines 
+represents solution of first instance and so on. Each instance solved by five methods. 
+Lets describe the +bfs+ solution of first instance from second line on the example below:
+- <tt>11</tt> .. instance id
+- <tt>bfs</tt> .. solution method
+- <tt>10</tt> .. number of operations performed with buckets
+- <tt>8921</tt> .. number of closed states
+- <tt>10219</tt> .. number of expanded states
+- <tt>first >> 0,0,1,0,0 >> 14,0,1,0,0 >> </tt> .. trace from initial to final state
+
+
+Output example (3 instances, all solving methods):
+	id;method;bucket-operation-count;closed-states-sum;expanded-states-sum;trace
+	11;bfs;10;8921;10219;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,10,1,0,0 >> 12,10,1,2,0 >> 12,10,1,0,0 >> 12,10,0,1,0 >> 12,4,6,1,0 >> 12,0,6,1,4 >> 12,6,0,1,4 >> 12,6,4,1,0 >> 12,6,4,1,8
+	11;dfs;22;3735;21317;first >> 0,0,1,0,0 >> 1,0,0,0,0 >> 1,0,0,0,8 >> 1,0,6,0,2 >> 1,6,0,0,2 >> 0,6,0,0,3 >> 6,0,0,0,3 >> 4,0,0,2,3 >> 0,0,0,2,3 >> 0,2,0,0,3 >> 0,2,0,2,1 >> 0,4,0,0,1 >> 0,0,4,0,1 >> 14,0,4,0,1 >> 12,0,6,0,1 >> 12,6,0,0,1 >> 10,6,0,2,1 >> 10,6,2,0,1 >> 14,6,2,0,1 >> 12,6,2,2,1 >> 12,6,4,0,1 >> 12,6,4,1,0 >> 12,6,4,1,8
+	11;man;21;75;1220;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,0,1,0,8 >> 14,10,1,0,8 >> 14,5,6,0,8 >> 12,5,6,2,8 >> 12,5,6,0,8 >> 12,5,4,2,8 >> 12,7,4,0,8 >> 12,7,4,2,8 >> 12,9,4,0,8 >> 12,9,4,2,8 >> 12,10,4,1,8 >> 14,8,4,1,8 >> 13,8,4,2,8 >> 13,6,6,2,8 >> 13,6,6,0,8 >> 13,6,4,2,8 >> 13,6,4,0,8 >> 14,6,4,0,7 >> 12,6,4,2,7 >> 12,6,4,1,8
+	11;euc;22;208;3052;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,0,1,0,8 >> 14,10,1,0,8 >> 14,5,6,0,8 >> 12,5,6,2,8 >> 12,5,6,0,8 >> 12,5,4,2,8 >> 12,7,4,0,8 >> 12,7,4,2,8 >> 12,9,4,0,8 >> 12,9,4,2,8 >> 14,9,4,2,8 >> 13,10,4,2,8 >> 13,8,6,2,8 >> 13,8,6,0,8 >> 13,6,6,2,8 >> 13,6,6,0,8 >> 13,6,4,2,8 >> 13,6,4,0,8 >> 14,6,4,0,7 >> 12,6,4,2,7 >> 12,6,4,1,8
+	11;sco;13;23;387;first >> 0,0,1,0,0 >> 0,0,1,0,8 >> 0,0,0,1,8 >> 0,0,6,1,8 >> 0,6,0,1,8 >> 0,6,6,1,8 >> 6,6,0,1,8 >> 6,6,6,1,8 >> 12,6,0,1,8 >> 12,6,6,1,8 >> 12,6,6,1,0 >> 12,6,0,1,6 >> 12,6,6,1,6 >> 12,6,4,1,8
+	12;bfs;8;5819;19162;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,10,1,0,0 >> 14,10,1,2,0 >> 14,10,1,0,2 >> 14,10,0,1,2 >> 14,4,6,1,2 >> 14,4,5,2,2 >> 14,4,5,0,4
+	12;dfs;19;5263;34963;first >> 0,0,1,0,0 >> 1,0,0,0,0 >> 1,0,0,0,8 >> 1,0,0,2,6 >> 1,2,0,0,6 >> 1,2,0,2,4 >> 0,3,0,2,4 >> 0,0,3,2,4 >> 0,0,3,2,0 >> 2,0,3,0,0 >> 2,10,3,0,0 >> 2,8,3,2,0 >> 4,8,3,0,0 >> 4,8,3,2,0 >> 4,8,3,0,2 >> 4,6,3,2,2 >> 4,6,3,0,4 >> 4,4,3,2,4 >> 4,4,5,0,4 >> 14,4,5,0,4
+	12;man;20;540;5067;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,1,0,0,0 >> 14,1,6,0,0 >> 14,1,6,0,8 >> 14,1,6,2,6 >> 14,3,6,0,6 >> 14,3,6,2,4 >> 14,3,6,0,4 >> 14,3,4,2,4 >> 14,3,4,0,4 >> 12,3,4,2,4 >> 12,3,4,0,4 >> 14,1,4,0,4 >> 14,0,5,0,4 >> 14,4,5,0,0 >> 14,4,5,0,8 >> 14,4,5,2,6 >> 14,4,5,0,6 >> 14,4,5,2,4 >> 14,4,5,0,4
+	12;euc;22;642;6559;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,0,1,2,0 >> 14,2,1,0,0 >> 14,2,0,0,1 >> 14,2,6,0,1 >> 14,2,6,2,1 >> 14,2,6,0,3 >> 14,5,6,0,0 >> 14,5,6,0,8 >> 14,5,6,2,6 >> 14,5,6,0,6 >> 14,5,6,2,4 >> 14,5,6,0,4 >> 14,3,6,2,4 >> 14,3,6,0,4 >> 14,3,4,2,4 >> 14,3,4,0,4 >> 14,1,4,2,4 >> 14,0,5,2,4 >> 14,2,5,0,4 >> 14,2,5,2,4 >> 14,4,5,0,4
+	12;sco;16;295;2933;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,1,0,0,0 >> 5,10,0,0,0 >> 5,0,0,0,0 >> 0,0,5,0,0 >> 14,0,5,0,0 >> 14,0,0,0,5 >> 14,10,0,0,5 >> 14,4,6,0,5 >> 14,4,0,0,5 >> 14,4,5,0,0 >> 14,0,5,0,4 >> 4,10,5,0,4 >> 4,0,5,0,4 >> 0,4,5,0,4 >> 14,4,5,0,4
+	13;bfs;8;5670;19098;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,10,1,0,0 >> 14,10,6,0,0 >> 12,10,6,2,0 >> 12,10,0,2,6 >> 12,4,6,2,6 >> 12,6,6,0,6 >> 12,6,6,2,4
+	13;dfs;15;1279;12876;first >> 0,0,1,0,0 >> 0,0,0,0,1 >> 0,0,0,0,8 >> 8,0,0,0,0 >> 8,10,0,0,0 >> 8,2,0,0,8 >> 8,2,0,2,6 >> 8,4,0,0,6 >> 8,4,0,2,4 >> 10,4,0,0,4 >> 10,4,0,2,4 >> 12,4,0,0,4 >> 12,4,0,2,4 >> 12,6,0,0,4 >> 12,6,0,2,4 >> 12,6,6,2,4
+	13;man;9;11;141;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,0,6,0,0 >> 12,0,6,2,0 >> 12,10,6,2,0 >> 12,2,6,2,8 >> 12,4,6,0,8 >> 12,4,6,2,6 >> 12,6,6,0,6 >> 12,6,6,2,4
+	13;euc;11;79;1279;first >> 0,0,1,0,0 >> 14,0,1,0,0 >> 14,10,1,0,0 >> 14,5,6,0,0 >> 12,5,6,2,0 >> 12,5,6,0,2 >> 12,5,6,2,2 >> 12,5,6,0,4 >> 12,10,6,0,4 >> 12,8,6,2,4 >> 12,8,6,0,4 >> 12,6,6,2,4
+	13;sco;11;14;184;first >> 0,0,1,0,0 >> 0,0,1,2,0 >> 0,0,6,2,0 >> 14,0,6,2,0 >> 4,10,6,2,0 >> 4,2,6,2,8 >> 12,2,6,2,0 >> 12,0,6,2,2 >> 12,6,0,2,2 >> 12,6,6,2,2 >> 12,6,6,0,4 >> 12,6,6,2,4
+
+=== RDoc generation
+    rdoc lib README -all
