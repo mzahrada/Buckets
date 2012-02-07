@@ -1,0 +1,9 @@
+require_relative '../lib/buckets/runner'
+begin
+	runner = Buckets::Runner.new
+	runner.run()
+rescue ArgumentError => e
+	puts e.message
+rescue IOError => e
+	puts e.message
+end
